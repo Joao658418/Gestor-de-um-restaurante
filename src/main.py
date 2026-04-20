@@ -3,7 +3,9 @@ import pratos
 
 # Definição do menu
 def menu():
-    print("\n===== MENU CLIENTE =====")
+    print("\n" + "="*30)
+    print("      SISTEMA RESTAURANTE")
+    print("="*30)
     print("1 - Criar cliente")
     print("2 - Listar clientes")
     print("3 - Consultar cliente (NIF)")
@@ -23,63 +25,62 @@ def main():
         menu()
         opcao = input("Escolha uma opção: ")
 
+        # --- GESTÃO DE CLIENTES ---
         if opcao == "1":
-            nif = input("NIF: ")
             nome = input("Nome: ")
             nasc = input("Data Nascimento (YYYY-MM-DD): ")
-            tel = input("Telemóvel: ")
+            nif = input("NIF: ")
+            tel = input("Telefone: ")
 
-            # return_code[0] é o status, return_code[1] é a mensagem
             code, obj = clientes.adicionar_cliente(nif, nome, nasc, tel)
-
             if code == 201:
-                print("Cliente criado com sucesso.")
-            elif obj == 500:
-                print("Internal Error: " + obj)
+                print("Cliente " + obj["nome"] + " criado com sucesso.")
+            else:
+                print("Error: " + obj)
 
         elif opcao == "2":
             code, obj = clientes.listar_clientes()
-            # Se for 200, a função listar_clientes já imprimiu a lista
-            if return_code[0] == 200:
-                print("Clientes listados com sucesso.")
+            if code == 200:
+                print("\n--- LISTAGEM DE CLIENTES ---")
+                for nif, dados in obj.items():
+                    print(f"NIF: {nif} | Nome: {dados['nome']} | Data Nasc: {dados['nascimento']}")
+                print("cliente listado com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "3":
-            nif = input("NIF do cliente: ")
+            nif = input("NIF do utilizador: ")
             code, obj = clientes.pesquisar_cliente(nif)
             if code == 200:
-                print("Consulta realizada com sucesso.")
+                print(obj)
+                print("Cliente listado com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "4":
-            nif = input("NIF do cliente: ")
+            nif = input("NIF do utilizador: ")
             nome = input("Novo nome (enter para manter): ")
             nasc = input("Nova data (enter para manter): ")
             tel = input("Novo telefone (enter para manter): ")
 
-            # Passamos os dados; se estiver vazio, a lógica no clientes.py ignora
             code, obj = clientes.atualizar_cliente(
                 nif,
                 nome if nome else None,
                 nasc if nasc else None,
                 tel if tel else None
             )
-
             if code == 200:
-                print("Cliente atualizado com sucesso.")
+                print("cliente actualizado com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "5":
-            nif = input("NIF do cliente para remover: ")
+            nif = input("NIF do cliente: ")
             code, obj = clientes.remover_cliente(nif)
-
             if code == 200:
-                print("Cliente removido com sucesso.")
+                print("cliente removido com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         # --- GESTÃO DE PRATOS ---
         elif opcao == "6":
@@ -93,7 +94,7 @@ def main():
             if code == 201:
                 print("Prato " + obj["nome"] + " criado com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "7":
             code, obj = pratos.listar_pratos()
@@ -103,7 +104,7 @@ def main():
                     print(f"ID: {p['id']} | Nome: {p['nome']} | Preco: {p['preco']}")
                 print("Pratos listados com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "8":
             id_p = input("ID do prato: ")
@@ -112,7 +113,7 @@ def main():
                 print(obj)
                 print("Consulta realizada com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "9":
             id_p = input("ID do prato: ")
@@ -127,7 +128,7 @@ def main():
             if code == 200:
                 print("Prato actualizado com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "10":
             id_p = input("ID do prato: ")
@@ -135,7 +136,7 @@ def main():
             if code == 200:
                 print("Prato removido com sucesso.")
             else:
-                print("Internal Error: " + obj)
+                print("Error: " + obj)
 
         elif opcao == "0":
             print("A sair...")
@@ -143,11 +144,6 @@ def main():
 
         else:
             print("Opcao invalida.")
-
-if __name__ == "__main__":
-    main()
-            print("Opção inválida.")
-
 
 if __name__ == "__main__":
     main()
