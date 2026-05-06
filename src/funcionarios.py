@@ -37,16 +37,16 @@ def consultar_funcionario(nif):
 def atualizar_funcionario(nif, cargo=None, salario=None, data_saida=None):
     if nif not in db_funcionarios:
         return 404, "Funcionario nao encontrado."
-
+    
     if cargo: db_funcionarios[nif]["cargo"] = cargo
     if salario: db_funcionarios[nif]["salario"] = salario
     if data_saida: db_funcionarios[nif]["data_saida"] = data_saida
-
-    return 200, db_funcionarios
-
+    
+    # Devolve apenas o objeto atualizado
+    return 200, db_funcionarios[nif]
 
 def remover_funcionario(nif):
     if nif in db_funcionarios:
-        db_funcionarios.pop(nif)
-        return 200, db_funcionarios
+        # Extrai e devolve apenas o objeto removido
+        return 200, db_funcionarios.pop(nif)
     return 404, "Funcionario nao encontrado."
