@@ -47,22 +47,21 @@ def atualizar_fornecedores(nif, novo_nome=nome, novotipo_produto=tipo_produto)
         return 400,"Erro interno: {e}"
 
 
-def remover_fornecedores(nif):
-    try:
-        if nif not in db_fornecedores:
-            return 404, "fornecedor não encontrado!"
-
-        fornecedor_eliminado = db_fornecedores.pop(nif)
-        return 200, fornecedor_eliminado
-
-    except Exception as e:
-        return 500, f"Erro interno: {e}"
 def atualizar_fornecedor(nif, nome=None, tipo_produto=None):
     if nif not in db_fornecedores:
         return 404, "Fornecedor nao encontrado."
-
+    
     if nome: db_fornecedores[nif]["nome"] = nome
     if tipo_produto: db_fornecedores[nif]["tipo_produto"] = tipo_produto
+    
+    # Devolve apenas o objeto atualizado
+    return 200, db_fornecedores[nif]
 
-    return 200, db_fornecedores
+def remover_fornecedor(nif):
+    if nif in db_fornecedores:
+        # Extrai e devolve apenas o objeto removido
+        return 200, db_fornecedores.pop(nif)
+    return 404, "Fornecedor nao encontrado." = tipo_produto
+
+    
 
