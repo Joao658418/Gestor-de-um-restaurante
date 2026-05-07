@@ -32,21 +32,6 @@ def consultar_fornecedor(nif):
         return 200, db_fornecedores[nif]
     return 404, "Fornecedor nao encontrado."
 
-def atualizar_fornecedores(nif, novo_nome=nome, novotipo_produto=tipo_produto)
-        if nif not in db_fornecedores:
-            return 404,  "Cliente não encontrado!"
-        fornecedor = {
-            "nome": novo_nome,
-            "tipo_produto"= novotipo_produto
-            "nif": nif
-        }
-        db_fornecedor[nif].update(fornecedor)
-        return 200, fornecedor
-
-    except Exception as e:
-        return 400,"Erro interno: {e}"
-
-
 def atualizar_fornecedor(nif, nome=None, tipo_produto=None):
     if nif not in db_fornecedores:
         return 404, "Fornecedor nao encontrado."
