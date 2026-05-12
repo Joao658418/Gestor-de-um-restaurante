@@ -1,52 +1,54 @@
-from utils import db_funcionarios
+import json
+import os
 
+FICHEIRO_FUNCIONARIOS = "funcionarios.json"
+db_funcionarios = {}
+
+def guardar():
+    with open(FICHEIRO_FUNCIONARIOS, "w", encoding="utf-8") as f:
+        json.dump(db_funcionarios, f, indent=4, ensure_ascii=False)
+
+def carregar():
+    global db_funcionarios
+    if os.path.exists(FICHEIRO_FUNCIONARIOS):
+        with open(FICHEIRO_FUNCIONARIOS, "r", encoding="utf-8") as f:
+            db_funcionarios = json.load(f)
 
 def criar_funcionario(nif, nome, nascimento, cargo, salario, data_entrada):
-    try:
-        if not nif or not nome:
-            return 400, "NIF e Nome sao obrigatorios."
-
-        if nif in db_funcionarios:
-            return 400, "Funcionario ja existe."
-
-        db_funcionarios[nif] = {
-            "nome": nome,
-            "nascimento": nascimento,
-            "cargo": cargo,
-            "salario": salario,
-            "data_entrada": data_entrada,
-            "data_saida": None  # Inicialmente vazio
-        }
-        return 201, db_funcionarios[nif]
-    except Exception as e:
-        return 500, str(e)
-
+    carregar()
+    if nif in db_funcionarios:
+        return 400, "Funcionario ja existe."
+    funcionario = {"nome": nome, "nascimento": nascimento, "cargo": cargo, "salario": salario, "data_entrada": data_entrada, "data_saida": None}
+    db_funcionarios[nif] = funcionario
+    guardar()
+    return 201, funcionario
 
 def listar_funcionarios():
+    carregar()
     if not db_funcionarios:
-        return 404, "Nao existem funcionarios registados."
+        return 404, "Nao existem funcionarios."
     return 200, db_funcionarios
 
-
 def consultar_funcionario(nif):
+    carregar()
     if nif in db_funcionarios:
         return 200, db_funcionarios[nif]
-    return 404, "Funcionario nao encontrado."
-
+    return 404, "Nao encontrado."
 
 def atualizar_funcionario(nif, cargo=None, salario=None, data_saida=None):
+    carregar()
     if nif not in db_funcionarios:
-        return 404, "Funcionario nao encontrado."
-    
+        return 404, "Nao encontrado."
     if cargo: db_funcionarios[nif]["cargo"] = cargo
     if salario: db_funcionarios[nif]["salario"] = salario
     if data_saida: db_funcionarios[nif]["data_saida"] = data_saida
-    
-    # Devolve apenas o objeto atualizado
+    guardar()
     return 200, db_funcionarios[nif]
 
 def remover_funcionario(nif):
+    carregar()
     if nif in db_funcionarios:
-        # Extrai e devolve apenas o objeto removido
-        return 200, db_funcionarios.pop(nif)
-    return 404, "Funcionario nao encontrado."
+        removido = db_funcionarios.pop(nif)
+        guardar()
+        return 200, removido
+    return 404, "Nao encontrado."
