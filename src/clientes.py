@@ -1,68 +1,54 @@
-from utils import db_clientes
+import json
+import os
 
+FICHEIRO_CLIENTES = "clientes.json"
+db_clientes = {} # Mantive o nome que tinhas no utils
+
+def guardar():
+    with open(FICHEIRO_CLIENTES, "w", encoding="utf-8") as f:
+        json.dump(db_clientes, f, indent=4, ensure_ascii=False)
+
+def carregar():
+    global db_clientes
+    if os.path.exists(FICHEIRO_CLIENTES):
+        with open(FICHEIRO_CLIENTES, "r", encoding="utf-8") as f:
+            db_clientes = json.load(f)
 
 def adicionar_cliente(nif, nome, nascimento, telefone):
-    try:
-        if not nif or not nome:
-            return 400, "NIF e Nome são obrigatórios!"
-
-        if nif in db_clientes:
-            return 400, "Este NIF já está registado!"
-        cliente = {
-            "nome": nome,
-            "nascimento": nascimento,
-            "telefone": telefone,
-            "nif": nif
-        }
-        db_clientes[nif] = cliente
-        return 201, cliente
-
-    except Exception as e:
-        # Se acontecer algum erro bizarro no Python, simulamos o erro 500
-        return 400, f"Erro interno do sistema: {e}"
-
-
-def atualizar_cliente(nif, novo_nome, novo_nasc, novo_tel):
-    try:
-        if nif not in db_clientes:
-            return 404,  "Cliente não encontrado!"
-        cliente = {
-            "nome": novo_nome,
-            "nascimento": novo_nasc,
-            "telefone": novo_tel,
-            "nif": nif
-        }
-        db_clientes[nif].update(cliente)
-        return 200, cliente
-
-    except Exception as e:
-        return 400,"Erro interno: {e}"
-
-
-def remover_cliente(nif):
-    try:
-        if nif not in db_clientes:
-            return 404, "Cliente não encontrado!"
-
-        cliente_eliminado = db_clientes.pop(nif)
-        return 200, cliente_eliminado
-
-    except Exception as e:
-        return 500, f"Erro interno: {e}"
-
-
-def pesquisar_cliente(nif):
-    try:
-        if nif in db_clientes:
-            return 200, db_clientes[nif]
-        return 404,"Cliente não encontrado!",
-
-    except Exception as e:
-        return 500, "Erro interno: {e}"
-
+    carregar()
+    if nif in db_clientes:
+        return 400, "Cliente ja existe."
+    cliente = {"nome": nome, "nascimento": nascimento, "telefone": telefone}
+    db_clientes[nif] = cliente
+    guardar()
+    return 201, cliente
 
 def listar_clientes():
+    carregar()
     if not db_clientes:
-        return 404, "Não existem clientes registados."
-
+        return 404, "Nao existem clientes registados."
     return 200, db_clientes
+
+def pesquisar_cliente(nif):
+    carregar()
+    if nif not in db_clientes:
+        return 404, "Nao encontrado."
+    return 200, db_clientes[nif]
+
+def atualizar_cliente(nif, nome=None, nascimento=None, telefone=None):
+    carregar()
+    if nif not in db_clientes:
+        return 404, "Nao encontrado."
+    if nome: db_clientes[nif]["nome"] = nome
+    if nascimento: db_clientes[nif]["nascimento"] = nascimento
+    if telefone: db_clientes[nif]["telefone"] = telefone
+    guardar()
+    return 200, db_clientes[nif]
+
+def remover_cliente(nif):
+    carregar()
+    if nif in db_clientes:
+        removido = db_clientes.pop(nif)
+        guardar()
+        return 200, removido
+    return 404, "Nao encontrado."
