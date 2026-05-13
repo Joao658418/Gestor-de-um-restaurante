@@ -1,30 +1,71 @@
-Sistema modular de gestão para Restaurantes, utilizando operações CRUD e comunicação baseada em códigos de estado.
-📁 Estrutura
+🍽️ Sistema de Gestão de Restaurante (V3 - Persistência JSON)
 
-    main.py: Interface de utilizador e menus.
+Este projeto é uma aplicação de consola robusta para a gestão integral de um restaurante. O sistema foi desenhado seguindo princípios de modularidade e persistência de dados, permitindo gerir Clientes, Pratos, Fornecedores e Funcionários com armazenamento em ficheiros locais.
 
-    clientes.py / pratos.py / fornecedores.py / funcionarios.py: Lógica das entidades.
+📌 Índice
 
-    utils.py: Base de dados (dicionários e listas).
+    Visão Geral
 
-🚀 Como usar
+    Arquitetura do Sistema
 
-    Coloca todos os ficheiros na mesma pasta.
+    Entidades e Dados
 
-    Executa: python main.py
+    Códigos de Resposta (Status Codes)
 
-📊 Códigos de Resposta
+    Como Executar
 
-    200 / 201: Sucesso (Operação concluída).
+    Persistência de Dados
 
-    400: Erro de validação (Dados em falta).
+📖 Visão Geral
 
-    404: Não encontrado.
+O sistema permite realizar todas as operações de CRUD (Create, Read, Update, Delete). A grande diferença desta versão é a integração com a biblioteca json, que garante que as informações não se perdem ao fechar o programa.
+O sistema permite realizar todas as operações de CRUD (Create, Read, Update, Delete). A grande diferença desta versão é a integração com a biblioteca json, que garante que as informações não se perdem ao fechar o programa.
 
-    500: Erro interno do sistema.
+🏗️ Arquitetura do Sistema
 
-🛠️ Tecnologias
+O projeto está dividido em módulos independentes para facilitar a manutenção:
 
-    Python 3.x
+    main.py: O motor central. Gere os menus, recebe os inputs do utilizador e comunica com os módulos lógicos.
 
-    Estruturas de dados em memória (Dicionários/Listas).# Gestor-de-um-restaurante
+    clientes.py: Gestão de clientes (NIF, nome, nascimento, telefone).
+
+    pratos.py: Gestão do cardápio (ID, preço, estrelas, ingredientes).
+
+    fornecedores.py: Gestão de fornecedores e logística de produtos.
+
+    funcionarios.py: Gestão de RH, salários e contratos.
+
+    utils.py: Funções auxiliares e definições globais.
+
+    🗂️ Entidades e Dados
+    
+     Entidade	Identificador Principal	  Atributos Principais
+    Clientes	        NIF	              Nome, Nascimento, Telefone
+    Fornecedores	    NIF      	      Morada, Telemóvel, Email, Tipo de Produto
+    Funcionários	    NIF	              Cargo, Salário, Data de Entrada, Data de Saída
+
+    🚦 Códigos de Resposta (Status Codes)
+
+Para garantir uma comunicação clara entre as funções e a interface, utilizamos um padrão de retorno baseado em tuplos (código, objeto/mensagem):
+
+    201 (Created): Sucesso na criação de um novo registo.
+
+    200 (OK): Sucesso na consulta, listagem, atualização ou remoção.
+
+    400 (Bad Request): Dados inválidos ou tentativa de duplicar registos.
+
+    404 (Not Found): O registo solicitado não existe no ficheiro.
+    
+🚀 Como Executar
+
+    Certifica-te de que tens o Python 3.x instalado.
+
+    Mantém todos os ficheiros .py na mesma diretoria.
+
+    Executa o comando:
+    Bash
+
+    python main.py
+    500 (Internal Error): Erro inesperado no processamento de dados.
+
+    
